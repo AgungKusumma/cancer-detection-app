@@ -21,7 +21,10 @@ class ResultActivity : AppCompatActivity() {
         val result = intent.getStringExtra(KEY_RESULT)
         val confidence = intent.getFloatExtra(KEY_CONFIDENCE, 0f)
 
-        binding.resultImage.setImageURI(imageUri)
-        binding.resultText.text = getString(R.string.classification_result, result, confidence)
+        with(binding) {
+            btnBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+            resultImage.setImageURI(imageUri)
+            resultText.text = getString(R.string.classification_result, result, confidence)
+        }
     }
 }

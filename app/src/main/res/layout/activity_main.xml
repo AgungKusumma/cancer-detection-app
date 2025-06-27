@@ -4,54 +4,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/windowBackground"
+    android:padding="16dp"
     tools:context=".view.MainActivity">
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressIndicator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="8dp"
         android:indeterminate="true"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/previewImageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/galleryButton"
+        app:indicatorColor="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_place_holder" />
+        app:trackCornerRadius="100dp" />
 
-    <Button
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        app:layout_constraintBottom_toTopOf="@id/galleryButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressIndicator">
+
+        <ImageView
+            android:id="@+id/previewImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_place_holder" />
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/galleryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/gallery"
-        app:layout_constraintBottom_toTopOf="@+id/analyzeButton"
+        app:backgroundTint="?attr/colorPrimary"
+        app:cornerRadius="16dp"
+        app:icon="@drawable/ic_gallery"
+        app:iconGravity="textStart"
+        app:layout_constraintBottom_toTopOf="@id/analyzeButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/analyzeButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:text="@string/analyze"
+        app:backgroundTint="?attr/colorPrimary"
+        app:cornerRadius="16dp"
+        app:icon="@drawable/ic_analyze"
+        app:iconGravity="textStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

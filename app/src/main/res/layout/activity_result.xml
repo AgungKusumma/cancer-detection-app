@@ -1,28 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/windowBackground"
     tools:context=".view.ResultActivity">
 
     <LinearLayout
+        android:id="@+id/topbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/result_image"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_place_holder"/>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_button_back"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back" />
 
-        <TextView
-            android:id="@+id/result_text"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/result"
+            android:textColor="@color/color_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topbar">
+
+        <LinearLayout
+            android:id="@+id/contentLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="@string/result" />
-    </LinearLayout>
-</ScrollView>
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/imageCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp">
+
+                <ImageView
+                    android:id="@+id/result_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_place_holder" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/result_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_result_text"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="@string/result"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
