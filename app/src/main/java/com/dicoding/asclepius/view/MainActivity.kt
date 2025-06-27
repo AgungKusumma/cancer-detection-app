@@ -14,11 +14,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.dicoding.asclepius.R
 import com.dicoding.asclepius.databinding.ActivityMainBinding
+import com.dicoding.asclepius.helper.ImageClassifierHelper
+import com.dicoding.asclepius.utils.Constant.ResultKeys.KEY_CONFIDENCE
+import com.dicoding.asclepius.utils.Constant.ResultKeys.KEY_IMAGE_URI
+import com.dicoding.asclepius.utils.Constant.ResultKeys.KEY_RESULT
+import org.tensorflow.lite.task.vision.classifier.Classifications
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ImageClassifierHelper.ClassifierListener {
     private lateinit var binding: ActivityMainBinding
 
     private var currentImageUri: Uri? = null
+    private lateinit var imageClassifierHelper: ImageClassifierHelper
 
     private val requiredPermission: String
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -67,11 +73,16 @@ class MainActivity : AppCompatActivity() {
             requestPermission()
         }
 
+        imageClassifierHelper = ImageClassifierHelper(
+            context = this, classifierListener = this
+        )
+
         setupAction()
     }
 
     private fun setupAction() = with(binding) {
         galleryButton.setOnClickListener { handleGalleryAccess() }
+        analyzeButton.setOnClickListener { analyzeImage() }
     }
 
     private fun handleGalleryAccess() {
@@ -112,15 +123,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun analyzeImage() {
+        currentImageUri?.let {
+            imageClassifierHelper.classifyStaticImage(it)
+        } ?: showToast(getString(R.string.no_image_selected))
+    }
+
+
     private fun allPermissionsGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
-            this,
-            requiredPermission
+            this, requiredPermission
         ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermission() {
         requestPermissionLauncher.launch(requiredPermission)
+    }
+
+    override fun onError(error: String) {
+        showToast(getString(R.string.classification_failed, error))
+    }
+
+    override fun onResults(results: List<Classifications>?, inferenceTime: Long) {
+        if (results == null || results.isEmpty()) {
+            showToast(getString(R.string.no_result_found))
+            return
+        }
+
+        val topResult = results[0].categories.maxByOrNull { it.score }
+        if (topResult != null && currentImageUri != null) {
+            val intent = Intent(this, ResultActivity::class.java).apply {
+                putExtra(KEY_IMAGE_URI, currentImageUri)
+                putExtra(KEY_RESULT, topResult.label)
+                putExtra(KEY_CONFIDENCE, topResult.score * 100)
+            }
+            startActivity(intent)
+        } else {
+            showToast(getString(R.string.unable_to_classify))
+        }
     }
 
     private fun openAppSettings() {

@@ -8,4 +8,10 @@
     <string name="no_image_selected">No image selected</string>
     <string name="permission_required">Gallery access is required to pick an image.</string>
     <string name="permission_permanently_denied">Permission permanently denied. Please enable it in settings.</string>
+    <string name="image_classifier_failed">Image classifier failed to initialize. See error logs for details</string>
+    <string name="classification_result">Result: %1$s\nConfidence: %2$.2f%%</string>
+    <string name="classification_failed">Classification failed: %1$s</string>
+    <string name="no_result_found">No result found</string>
+    <string name="unable_to_classify">Unable to classify image</string>
+    <string name="failed_to_decode_image">Failed to decode image</string>
 </resources>
