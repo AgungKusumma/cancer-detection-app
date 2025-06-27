@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Asclepius</string>
-    <string name="camera_x">CameraX</string>
-    <string name="camera">Kamera</string>
-    <string name="gallery">Galeri</string>
+    <string name="gallery">Gallery</string>
     <string name="analyze">Analyze</string>
-    <string name="result">Hasil Analisis</string>
+    <string name="result">Analysis Result</string>
+    <string name="permission_granted">Permission granted.</string>
+    <string name="permission_denied">Permission denied. Gallery access is disabled.</string>
+    <string name="no_image_selected">No image selected</string>
+    <string name="permission_required">Gallery access is required to pick an image.</string>
+    <string name="permission_permanently_denied">Permission permanently denied. Please enable it in settings.</string>
 </resources>
