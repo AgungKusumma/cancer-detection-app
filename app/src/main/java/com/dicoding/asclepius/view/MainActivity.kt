@@ -2,11 +2,15 @@ package com.dicoding.asclepius.view
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import com.dicoding.asclepius.R
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.dicoding.asclepius.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -14,27 +18,85 @@ class MainActivity : AppCompatActivity() {
 
     private var currentImageUri: Uri? = null
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                showToast("Permission granted.")
+            } else {
+                showToast("Permission denied. Gallery access is disabled.")
+            }
+        }
+
+    private val launcherPhotoPicker = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        uri?.let {
+            currentImageUri = it
+            showImage()
+        } ?: showToast("No image selected")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        if (!allPermissionsGranted() && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            requestPermission()
+        }
+
+        setupAction()
+    }
+
+    private fun setupAction() = with(binding) {
+        galleryButton.setOnClickListener { startGallery() }
     }
 
     private fun startGallery() {
-        // TODO: Mendapatkan gambar dari Gallery.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            launcherPhotoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } else {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            launcherGalleryIntent.launch(intent)
+        }
+    }
+
+    private val launcherGalleryIntent = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val selectedImg: Uri? = result.data?.data
+            selectedImg?.let {
+                currentImageUri = it
+                showImage()
+            }
+        }
     }
 
     private fun showImage() {
-        // TODO: Menampilkan gambar sesuai Gallery yang dipilih.
+        currentImageUri?.let {
+            binding.previewImageView.setImageURI(it)
+        }
     }
 
-    private fun analyzeImage() {
-        // TODO: Menganalisa gambar yang berhasil ditampilkan.
+    private fun allPermissionsGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            requiredPermission
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun moveToResult() {
-        val intent = Intent(this, ResultActivity::class.java)
-        startActivity(intent)
+    private fun requestPermission() {
+        requestPermissionLauncher.launch(requiredPermission)
     }
+
+    private val requiredPermission: String
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
